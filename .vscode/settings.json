@@ -1,0 +1,25 @@
+{
+  "editor.fontSize": 20,
+  "terminal.integrated.fontSize": 14,
+  "files.exclude": {
+    ".dart_tool": true,
+    ".idea": true,
+    ".vscode": true,
+    "android": true,
+    "ios": true,
+    ".gitignore": true,
+    ".metadata": true,
+    ".packages": true,
+    "food_ordering_app.iml": true,
+    "pubspec.lock": true,
+    "auth/.dart_tool": true,
+    "auth/.idea": true,
+    "auth/.gitignore": true,
+    "auth/.metadata": true,
+    "auth/.packages": true,
+    "auth/auth.iml": true,
+    "auth/CHANGELOG.md": true,
+    "auth/LICENSE": true,
+    "auth/pubspec.lock": true
+  }
+}
