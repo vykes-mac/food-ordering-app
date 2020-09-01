@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:async/async.dart';
+import 'package:auth/src/domain/token.dart';
 import 'package:http/http.dart' as http;
 
 import '../../domain/credential.dart';
@@ -27,8 +28,9 @@ class AuthApi implements IAuthApi {
 
   Future<Result<String>> _postCredential(
       String endpoint, Credential credential) async {
-    var response =
-        await _client.post(endpoint, body: Mapper.toJson(credential));
+    var response = await _client.post(endpoint,
+        body: jsonEncode(Mapper.toJson(credential)),
+        headers: {"Content-type": "application/json"});
 
     if (response.statusCode != 200) return Result.error('Server error');
     var json = jsonDecode(response.body);
@@ -36,5 +38,17 @@ class AuthApi implements IAuthApi {
     return json['auth_token'] != null
         ? Result.value(json['auth_token'])
         : Result.error(json['message']);
+  }
+
+  @override
+  Future<Result<bool>> signOut(Token token) async {
+    var url = baseUrl + '/auth/signout';
+    var headers = {
+      "Content-type": "application/json",
+      "Authorization": token.value
+    };
+    var response = await _client.post(url, headers: headers);
+    if (response.statusCode != 200) return Result.value(false);
+    return Result.value(true);
   }
 }

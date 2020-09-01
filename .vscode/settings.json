@@ -3,7 +3,6 @@
   "terminal.integrated.fontSize": 14,
   "files.exclude": {
     ".dart_tool": true,
-    ".idea": true,
     ".vscode": true,
     "android": true,
     "ios": true,
@@ -13,7 +12,6 @@
     "food_ordering_app.iml": true,
     "pubspec.lock": true,
     "auth/.dart_tool": true,
-    "auth/.idea": true,
     "auth/.gitignore": true,
     "auth/.metadata": true,
     "auth/.packages": true,
