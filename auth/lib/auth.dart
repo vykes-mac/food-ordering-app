@@ -1,7 +1,5 @@
 library auth;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export './src/domain/auth_service_contract.dart';
+export './src/domain/signup_service_contract.dart';
+export './src/domain/token.dart';

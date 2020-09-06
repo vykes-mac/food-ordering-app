@@ -3,11 +3,10 @@ import 'package:auth/src/domain/credential.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../domain/auth_service_contract.dart';
-import '../../domain/signup_service_contract.dart';
 import '../../domain/token.dart';
 import '../../infra/api/auth_api_contract.dart';
 
-class EmailAuth implements IAuthService, ISignUpService {
+class EmailAuth implements IAuthService {
   final IAuthApi _api;
   Credential _credential;
   EmailAuth(this._api);
@@ -34,23 +33,5 @@ class EmailAuth implements IAuthService, ISignUpService {
   @override
   Future<Result<bool>> signOut(Token token) async {
     return await _api.signOut(token);
-  }
-
-  @override
-  Future<Result<Token>> signUp(
-    String name,
-    String email,
-    String password,
-  ) async {
-    Credential credential = Credential(
-      type: AuthType.email,
-      email: email,
-      name: name,
-      password: password,
-    );
-
-    var result = await _api.signUp(credential);
-    if (result.isError) return result.asError;
-    return Result.value(Token(result.asValue.value));
   }
 }

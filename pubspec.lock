@@ -8,6 +8,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.4.2"
+  auth:
+    dependency: "direct main"
+    description:
+      path: auth
+      relative: true
+    source: path
+    version: "0.0.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -43,6 +50,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.14.13"
+  cubit:
+    dependency: "direct main"
+    description:
+      name: cubit
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.2"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -50,6 +64,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.3"
+  equatable:
+    dependency: "direct main"
+    description:
+      name: equatable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.4"
   fake_async:
     dependency: transitive
     description:
@@ -62,11 +83,65 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_cubit:
+    dependency: "direct main"
+    description:
+      name: flutter_cubit
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_web_plugins:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
+  google_sign_in:
+    dependency: transitive
+    description:
+      name: google_sign_in
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.5.3"
+  google_sign_in_platform_interface:
+    dependency: transitive
+    description:
+      name: google_sign_in_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.2"
+  google_sign_in_web:
+    dependency: transitive
+    description:
+      name: google_sign_in_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.9.1+1"
+  http:
+    dependency: transitive
+    description:
+      name: http
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.12.2"
+  http_parser:
+    dependency: transitive
+    description:
+      name: http_parser
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.4"
+  js:
+    dependency: transitive
+    description:
+      name: js
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.6.2"
   matcher:
     dependency: transitive
     description:
@@ -81,6 +156,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.8"
+  mockito:
+    dependency: "direct dev"
+    description:
+      name: mockito
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.1"
+  nested:
+    dependency: transitive
+    description:
+      name: nested
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.4"
   path:
     dependency: transitive
     description:
@@ -88,6 +177,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
+  pedantic:
+    dependency: transitive
+    description:
+      name: pedantic
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.9.0"
+  provider:
+    dependency: transitive
+    description:
+      name: provider
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.3.2+2"
+  quiver:
+    dependency: transitive
+    description:
+      name: quiver
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.3"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -151,3 +261,4 @@ packages:
     version: "2.0.8"
 sdks:
   dart: ">=2.9.0-14.0.dev <3.0.0"
+  flutter: ">=1.16.0 <2.0.0"
