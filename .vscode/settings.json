@@ -3,9 +3,7 @@
   "terminal.integrated.fontSize": 14,
   "files.exclude": {
     ".dart_tool": true,
-    ".vscode": true,
     "android": true,
-    "ios": true,
     ".gitignore": true,
     ".metadata": true,
     ".packages": true,
@@ -18,6 +16,7 @@
     "auth/auth.iml": true,
     "auth/CHANGELOG.md": true,
     "auth/LICENSE": true,
-    "auth/pubspec.lock": true
+    "auth/pubspec.lock": true,
+    ".vscode": true
   }
 }

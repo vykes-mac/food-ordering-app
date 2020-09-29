@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:food_ordering_app/composition_root.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'ui/pages/auth/auth_page.dart';
-
 void main() {
+  CompositionRoot.configure();
   runApp(MyApp());
 }
 
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.montserratTextTheme(Theme.of(context).textTheme),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: AuthPage(),
+      home: CompositionRoot.composeAuthUi(),
     );
   }
 }
