@@ -1,0 +1,13 @@
+{
+  "files.exclude": {
+    ".idea": true,
+    ".dart_tool": true,
+    ".metadata": true,
+    ".packages": true,
+    "README.md": true,
+    "restaurant.iml": true,
+    "LICENSE": true,
+    "CHANGELOG.md": true
+  },
+  "editor.fontSize": 18
+}
