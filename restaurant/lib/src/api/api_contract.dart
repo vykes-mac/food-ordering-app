@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../domain/menu.dart';
 import '../domain/restaurant.dart';
 
 abstract class IRestaurantApi {
@@ -13,5 +14,5 @@ abstract class IRestaurantApi {
     @required String searchTerm,
   });
   Future<Restaurant> getRestaurant({@required String id});
-  Future<Restaurant> getRestaurantMenu({@required String restaurantId});
+  Future<List<Menu>> getRestaurantMenu({@required String restaurantId});
 }
