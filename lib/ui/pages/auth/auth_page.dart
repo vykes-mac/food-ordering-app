@@ -107,7 +107,7 @@ class _AuthPageState extends State<AuthPage> {
 
   _signIn() => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
+        child: ListView(
           children: [
             ..._emailAndPassword(),
             SizedBox(height: 30.0),
