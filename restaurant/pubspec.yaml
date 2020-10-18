@@ -12,16 +12,21 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^0.12.2
+  bloc: ^6.0.1
+  flutter_bloc: ^6.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: ^4.1.2
+  bloc_test: ^7.0.4
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter.
-flutter: null
+flutter:
+  uses-material-design: true
+
 # To add assets to your package, add an assets section, like this:
 # assets:
 #   - images/a_dot_burr.jpeg
