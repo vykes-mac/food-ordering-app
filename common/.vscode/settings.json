@@ -1,0 +1,15 @@
+{
+  "files.exclude": {
+    ".dart_tool": true,
+    ".idea": true,
+    "README.md": true,
+    "pubspec.lock": true,
+    "LICENSE": true,
+    "common.iml": true,
+    "CHANGELOG.md": true,
+    ".packages": true,
+    ".metadata": true,
+    ".gitignore": true
+  },
+  "editor.fontSize": 18
+}

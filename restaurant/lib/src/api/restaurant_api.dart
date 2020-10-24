@@ -1,68 +1,79 @@
 import 'dart:convert';
 
-import 'package:http/http.dart';
+import 'package:common/common.dart';
+import 'package:flutter/foundation.dart';
 
+import './page.dart';
 import '../api/api_contract.dart';
 import '../api/mapper.dart';
 import '../domain/menu.dart';
 import '../domain/restaurant.dart';
 
 class RestaurantApi implements IRestaurantApi {
-  final Client httpClient;
+  final IHttpClient httpClient;
   final String baseUrl;
   RestaurantApi(this.baseUrl, this.httpClient);
 
   @override
-  Future<List<Restaurant>> findRestaurants(
-      {int page, String searchTerm}) async {
-    final endpoint = baseUrl + '/search/page=$page&term=$searchTerm';
-    final response = await httpClient.get(endpoint);
-    return _parseRestaurantsJson(response);
+  Future<Page> findRestaurants(
+      {@required int page,
+      @required int pageSize,
+      @required String searchTerm}) async {
+    final endpoint =
+        baseUrl + '/search/page=$page&limit=$pageSize&term=$searchTerm';
+    final result = await httpClient.get(endpoint);
+    return _parseRestaurantsJson(result);
   }
 
   @override
-  Future<List<Restaurant>> getAllRestaurants({int page}) async {
-    final endpoint = baseUrl + '/restaurants/page=$page';
-    final response = await httpClient.get(endpoint);
-    return _parseRestaurantsJson(response);
+  Future<Page> getAllRestaurants(
+      {@required int page, @required int pageSize}) async {
+    final endpoint = baseUrl + '/restaurants/page=$page&limit=$pageSize';
+    final result = await httpClient.get(endpoint);
+    return _parseRestaurantsJson(result);
   }
 
   @override
   Future<Restaurant> getRestaurant({String id}) async {
     final endpoint = baseUrl + "/restaurant/$id";
-    final response = await httpClient.get(endpoint);
-    if (response.statusCode != 200) return null;
-    final json = jsonDecode(response.body);
+    final result = await httpClient.get(endpoint);
+    if (result.status == Status.failure) return null;
+    final json = jsonDecode(result.data);
     return Mapper.fromJson(json);
   }
 
   @override
-  Future<List<Restaurant>> getRestaurantByLocation(
-      {int page, Location location}) async {
+  Future<Page> getRestaurantsByLocation(
+      {int page, int pageSize, Location location}) async {
     final endpoint = baseUrl +
-        '/restaurant/page=$page&longitude=${location.longitude}&latitude=${location.latitude}';
-    final response = await httpClient.get(endpoint);
-    return _parseRestaurantsJson(response);
+        '/restaurant/page=$page&limit=$pageSize&longitude=${location.longitude}&latitude=${location.latitude}';
+    final result = await httpClient.get(endpoint);
+    return _parseRestaurantsJson(result);
   }
 
   @override
   Future<List<Menu>> getRestaurantMenu({String restaurantId}) async {
     final endpoint = baseUrl + '/restaurnt/menu/$restaurantId';
-    final response = await httpClient.get(endpoint);
-    return _parseRestaurantMenu(response);
+    final result = await httpClient.get(endpoint);
+    return _parseRestaurantMenu(result);
   }
 
-  List<Restaurant> _parseRestaurantsJson(Response response) {
-    if (response.statusCode != 200) return [];
+  Page _parseRestaurantsJson(HttpResult result) {
+    if (result.status == Status.failure) return null;
 
-    final json = jsonDecode(response.body);
-    return json['restaurants'] != null ? _restaurantsFromJson(json) : [];
+    final json = jsonDecode(result.data);
+    final restaurants =
+        json['restaurants'] != null ? _restaurantsFromJson(json) : [];
+    return Page(
+        currentPage: json['metadata']['page'],
+        pageSize: json['metadata']['limit'],
+        restaurants: restaurants);
   }
 
-  List<Menu> _parseRestaurantMenu(Response response) {
-    if (response.statusCode != 200) return [];
+  List<Menu> _parseRestaurantMenu(HttpResult result) {
+    if (result.status == Status.failure) return [];
 
-    final json = jsonDecode(response.body);
+    final json = jsonDecode(result.data);
     if (json['menu'] == null) return [];
 
     final List menus = json['menu'];

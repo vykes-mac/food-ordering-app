@@ -1,12 +1,12 @@
 import 'dart:convert';
 
+import 'package:common/common.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:restaurant/src/api/restaurant_api.dart';
 import 'package:restaurant/src/domain/restaurant.dart';
 
-class HttpClient extends Mock implements http.Client {}
+class HttpClient extends Mock implements IHttpClient {}
 
 void main() {
   RestaurantApi sut;
@@ -18,129 +18,132 @@ void main() {
   });
 
   group('getAllRestaurants', () {
-    test('resturns an empty list when no restaurants are found', () async {
+    test('returns an empty list when no restaurants are found', () async {
       //arrange
-      when(client.get(any)).thenAnswer(
-          (_) async => http.Response(jsonEncode({"restaurants": []}), 200));
+      when(client.get(any)).thenAnswer((_) async => HttpResult(
+          jsonEncode({
+            "metadata": {"page": 1, "limit": 2},
+            "restaurants": []
+          }),
+          Status.success));
       //act
-      final results = await sut.getAllRestaurants(page: 1);
+      final page = await sut.getAllRestaurants(page: 1, pageSize: 2);
 
       //assert
-      expect(results, []);
+      expect(page.restaurants, []);
     });
-    test('resturns an empty list when response status is not 200', () async {
+    test('returns null when status is not 200', () async {
       //arrange
       when(client.get(any))
-          .thenAnswer((_) async => http.Response(jsonEncode({}), 401));
+          .thenAnswer((_) async => HttpResult(jsonEncode({}), Status.failure));
       //act
-      final results = await sut.getAllRestaurants(page: 1);
+      final page = await sut.getAllRestaurants(page: 1, pageSize: 2);
 
       //assert
-      expect(results, []);
+      expect(page, isNull);
     });
     test('resturns list of restaurants when success', () async {
       //arrange
       when(client.get(any)).thenAnswer((_) async =>
-          http.Response(jsonEncode({"restaurants": _restaurantsJson()}), 200));
+          HttpResult(jsonEncode(_restaurantsJson()), Status.success));
       //act
-      final results = await sut.getAllRestaurants(page: 1);
+      final page = await sut.getAllRestaurants(page: 1, pageSize: 2);
 
       //assert
-      expect(results, isNotEmpty);
+      expect(page.restaurants.length, 2);
     });
   });
 
   group('getRestaurant', () {
-    test('returns null when the restaurant is not foun d', () async {
-      when(client.get(any)).thenAnswer((_) async =>
-          http.Response(jsonEncode({"error": "restaurant not found"}), 404));
+    test('returns null when restaurant is not found', () async {
+      when(client.get(any)).thenAnswer((_) async => HttpResult(
+          jsonEncode({"error": "restaurant not found"}), Status.failure));
 
-      final result = await sut.getRestaurant(id: '12334');
+      final result = await sut.getRestaurant(id: '1234');
 
       expect(result, null);
     });
     test('returns restaurant when success', () async {
-      //arrange
-      when(client.get(any)).thenAnswer(
-          (_) async => http.Response(jsonEncode(_restaurantsJson()[0]), 200));
+      when(client.get(any)).thenAnswer((_) async => HttpResult(
+          jsonEncode(_restaurantsJson()["restaurants"][0]), Status.success));
 
-      //act
       final result = await sut.getRestaurant(id: '12345');
 
-      //assert
       expect(result, isNotNull);
       expect(result.id, '12345');
     });
   });
 
-  group('getRestaurantsByLocation', () {
-    test('returns an empty list when no restaurants are found', () async {
-      //arrange
-      when(client.get(any)).thenAnswer(
-          (_) async => http.Response(jsonEncode({"restaurants": []}), 200));
-      //act
-      final results = await sut.getRestaurantByLocation(
-        page: 1,
-        location: Location(longitude: 1233, latitude: 12.45),
-      );
+  group('findRestaurants', () {
+    test('returns empty list when no restaurants are found', () async {
+      when(client.get(any)).thenAnswer((_) async => HttpResult(
+          jsonEncode({
+            "metadata": {"page": 1, "limit": 2},
+            "restaurants": []
+          }),
+          Status.success));
 
-      //assert
-      expect(results, []);
+      final page = await sut.findRestaurants(
+          page: 1, pageSize: 2, searchTerm: 'good food');
+
+      expect(page.restaurants, []);
     });
-
-    test('returns list of restaurants when success', () async {
-      //arrange
+    test('returns restaurant when success', () async {
       when(client.get(any)).thenAnswer((_) async =>
-          http.Response(jsonEncode({"restaurants": _restaurantsJson()}), 200));
-      //act
-      final results = await sut.getRestaurantByLocation(
-        page: 1,
-        location: Location(longitude: 1233, latitude: 12.45),
-      );
-      //assert
-      expect(results, isNotEmpty);
-      expect(results.length, 2);
+          HttpResult(jsonEncode(_restaurantsJson()), Status.success));
+
+      final page = await sut.findRestaurants(
+          page: 1, pageSize: 2, searchTerm: 'good food');
+
+      expect(page.restaurants.length, 2);
     });
   });
-  group('findRestaurants', () {
-    test('returns an empty list when no restaurants are found', () async {
-      //arrange
-      when(client.get(any)).thenAnswer(
-          (_) async => http.Response(jsonEncode({"restaurants": []}), 200));
-      //act
-      final results = await sut.findRestaurants(page: 1, searchTerm: 'blaggg');
 
-      //assert
-      expect(results, []);
+  group('getRestaurantsByLocation', () {
+    test('returns empty list when no restaurants are found', () async {
+      when(client.get(any)).thenAnswer((_) async => HttpResult(
+          jsonEncode({
+            "metadata": {"page": 1, "limit": 2},
+            "restaurants": []
+          }),
+          Status.success));
+
+      final page = await sut.getRestaurantsByLocation(
+        page: 1,
+        pageSize: 2,
+        location: Location(longitude: 232.2, latitude: 2323.45),
+      );
+
+      expect(page.restaurants, []);
     });
-
-    test('returns list of restaurants when success', () async {
-      //arrange
+    test('returns restaurant when success', () async {
       when(client.get(any)).thenAnswer((_) async =>
-          http.Response(jsonEncode({"restaurants": _restaurantsJson()}), 200));
-      //act
-      final results = await sut.findRestaurants(page: 1, searchTerm: 'blaaas');
-      //assert
-      expect(results, isNotEmpty);
-      expect(results.length, 2);
+          HttpResult(jsonEncode(_restaurantsJson()), Status.success));
+
+      final result = await sut.getRestaurantsByLocation(
+        page: 1,
+        pageSize: 2,
+        location: Location(longitude: 232.2, latitude: 2323.45),
+      );
+
+      expect(result.restaurants.length, 2);
     });
   });
 
   group('getRestaurantMenu', () {
     test('returns empty list when no menu is found', () async {
       when(client.get(any)).thenAnswer(
-          (_) async => http.Response(jsonEncode({"menu": []}), 404));
+          (_) async => HttpResult(jsonEncode({"menu": []}), Status.failure));
 
-      final result = await sut.getRestaurantMenu(restaurantId: '12345');
+      final result = await sut.getRestaurantMenu(restaurantId: '1234');
 
       expect(result, []);
     });
-
     test('returns restaurant menu when success', () async {
-      when(client.get(any)).thenAnswer((_) async =>
-          http.Response(jsonEncode({"menu": _restaurantMenuJson()}), 200));
+      when(client.get(any)).thenAnswer((_) async => HttpResult(
+          jsonEncode({"menu": _restaurantMenuJson()}), Status.success));
 
-      final result = await sut.getRestaurantMenu(restaurantId: '12345');
+      final result = await sut.getRestaurantMenu(restaurantId: '1234');
 
       expect(result, isNotEmpty);
       expect(result.length, 1);
@@ -150,34 +153,37 @@ void main() {
 }
 
 _restaurantsJson() {
-  return [
-    {
-      "id": "12345",
-      "name": "Restuarant Name",
-      "type": "Fast Food",
-      "image_url": "restaurant.jpg",
-      "location": {"longitude": 345.33, "latitude": 345.23},
-      "address": {
-        "street": "Road 1",
-        "city": "City",
-        "parish": "Parish",
-        "zone": "Zone"
+  return {
+    "metadata": {"page": 1, "limit": 2},
+    "restaurants": [
+      {
+        "id": "12345",
+        "name": "Restuarant Name",
+        "type": "Fast Food",
+        "image_url": "restaurant.jpg",
+        "location": {"longitude": 345.33, "latitude": 345.23},
+        "address": {
+          "street": "Road 1",
+          "city": "City",
+          "parish": "Parish",
+          "zone": "Zone"
+        }
+      },
+      {
+        "id": "12666",
+        "name": "Restuarant Name",
+        "type": "Fast Food",
+        "imageUrl": "restaurant.jpg",
+        "location": {"longitude": 345.33, "latitude": 345.23},
+        "address": {
+          "street": "Road 1",
+          "city": "City",
+          "parish": "Parish",
+          "zone": "Zone"
+        }
       }
-    },
-    {
-      "id": "12666",
-      "name": "Restuarant Name",
-      "type": "Fast Food",
-      "imageUrl": "restaurant.jpg",
-      "location": {"longitude": 345.33, "latitude": 345.23},
-      "address": {
-        "street": "Road 1",
-        "city": "City",
-        "parish": "Parish",
-        "zone": "Zone"
-      }
-    }
-  ];
+    ]
+  };
 }
 
 _restaurantMenuJson() {

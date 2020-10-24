@@ -1,4 +1,4 @@
-name: restaurant
+name: common
 description: A new Flutter package project.
 version: 0.0.1
 author: null
@@ -12,13 +12,10 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^0.12.2
-  common:
-    path: ../common
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: ^4.1.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -1,16 +1,19 @@
 import 'package:flutter/foundation.dart';
 
+import './page.dart';
 import '../domain/menu.dart';
 import '../domain/restaurant.dart';
 
 abstract class IRestaurantApi {
-  Future<List<Restaurant>> getAllRestaurants({@required int page});
-  Future<List<Restaurant>> getRestaurantByLocation({
+  Future<Page> getAllRestaurants({@required int page, @required int pageSize});
+  Future<Page> getRestaurantsByLocation({
     @required int page,
+    @required int pageSize,
     @required Location location,
   });
-  Future<List<Restaurant>> findRestaurants({
+  Future<Page> findRestaurants({
     @required int page,
+    @required int pageSize,
     @required String searchTerm,
   });
   Future<Restaurant> getRestaurant({@required String id});
