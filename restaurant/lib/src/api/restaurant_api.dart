@@ -66,7 +66,7 @@ class RestaurantApi implements IRestaurantApi {
         json['restaurants'] != null ? _restaurantsFromJson(json) : [];
     return Page(
         currentPage: json['metadata']['page'],
-        pageSize: json['metadata']['limit'],
+        totalPages: json['metadata']['total_pages'],
         restaurants: restaurants);
   }
 

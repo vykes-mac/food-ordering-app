@@ -1,7 +1,6 @@
 library restaurant;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export './src/api/api_contract.dart';
+export './src/api/page.dart';
+export './src/domain/menu.dart';
+export './src/domain/restaurant.dart';

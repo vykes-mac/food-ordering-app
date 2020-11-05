@@ -154,7 +154,7 @@ void main() {
 
 _restaurantsJson() {
   return {
-    "metadata": {"page": 1, "limit": 2},
+    "metadata": {"page": 1, "totalPages": 2},
     "restaurants": [
       {
         "id": "12345",

@@ -3,11 +3,12 @@ import 'package:restaurant/src/domain/restaurant.dart';
 
 class Page {
   final int currentPage;
-  final int pageSize;
+  final int totalPages;
+  bool get isLast => currentPage == totalPages;
   final List<Restaurant> restaurants;
 
   Page(
       {@required this.currentPage,
-      @required this.pageSize,
+      @required this.totalPages,
       @required this.restaurants});
 }

@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 class Restaurant {
@@ -18,7 +19,7 @@ class Restaurant {
   });
 }
 
-class Location {
+class Location extends Equatable {
   final double longitude;
   final double latitude;
 
@@ -26,9 +27,12 @@ class Location {
     @required this.longitude,
     @required this.latitude,
   });
+
+  @override
+  List<Object> get props => [longitude, latitude];
 }
 
-class Address {
+class Address extends Equatable {
   final String street;
   final String city;
   final String parish;
@@ -40,4 +44,7 @@ class Address {
     @required this.parish,
     this.zone,
   });
+
+  @override
+  List<Object> get props => [street, city, parish, zone];
 }
