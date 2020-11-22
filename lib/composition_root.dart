@@ -2,12 +2,16 @@ import 'package:auth/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:food_ordering_app/cache/local_store.dart';
+import 'package:food_ordering_app/fake_restaurant_api.dart';
 import 'package:food_ordering_app/states_management/auth/auth_cubit.dart';
+import 'package:food_ordering_app/states_management/helpers/header_cubit.dart';
+import 'package:food_ordering_app/states_management/restaurant/restaurant_cubit.dart';
 import 'package:food_ordering_app/ui/pages/auth/auth_page.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'cache/local_store_contract.dart';
+import 'ui/pages/restaurant/restaurant_list_page.dart';
 
 class CompositionRoot {
   static SharedPreferences _sharedPreferences;
@@ -31,5 +35,20 @@ class CompositionRoot {
       create: (BuildContext context) => _authCubit,
       child: AuthPage(_manger, _signupService),
     );
+  }
+
+  static Widget composeHomeUi() {
+    FakeRestaurantApi _api = FakeRestaurantApi(20);
+    RestaurantCubit _restaurantCubit =
+        RestaurantCubit(_api, defaultPageSize: 5);
+
+    return MultiCubitProvider(providers: [
+      CubitProvider<RestaurantCubit>(
+        create: (BuildContext context) => _restaurantCubit,
+      ),
+      CubitProvider<HeaderCubit>(
+        create: (BuildContext context) => HeaderCubit(),
+      )
+    ], child: RestaurantListPage());
   }
 }

@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.montserratTextTheme(Theme.of(context).textTheme),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: CompositionRoot.composeAuthUi(),
+      home: CompositionRoot.composeHomeUi(),
     );
   }
 }

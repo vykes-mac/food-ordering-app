@@ -17,6 +17,7 @@
     "auth/CHANGELOG.md": true,
     "auth/LICENSE": true,
     "auth/pubspec.lock": true,
-    ".vscode": true
+    ".vscode": true,
+    "build": true
   }
 }
