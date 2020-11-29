@@ -6,13 +6,17 @@ class CustomTextField extends StatelessWidget {
   final FontWeight fontWeight;
   final Function(String val) onChanged;
   final double height;
+  final void Function(String) onSubmitted;
+  final TextInputAction inputAction;
 
   CustomTextField(
       {this.hint,
       this.fontSize,
       this.fontWeight,
       this.onChanged,
-      this.height = 54.0});
+      this.height = 54.0,
+      this.onSubmitted,
+      this.inputAction});
 
   final _border = const OutlineInputBorder(
     borderRadius: BorderRadius.zero,
@@ -27,7 +31,9 @@ class CustomTextField extends StatelessWidget {
     return Container(
       height: height,
       child: TextField(
+        onSubmitted: onSubmitted,
         onChanged: onChanged,
+        textInputAction: inputAction,
         cursorColor: Colors.black,
         style: Theme.of(context).textTheme.overline.copyWith(
               color: Colors.black,

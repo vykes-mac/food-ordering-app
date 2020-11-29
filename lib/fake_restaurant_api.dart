@@ -30,8 +30,11 @@ class FakeRestaurantApi implements IRestaurantApi {
   Future<Page> findRestaurants(
       {int page, int pageSize, String searchTerm}) async {
     final filter = searchTerm != null
-        ? (Restaurant res) => res.name.contains(searchTerm)
+        ? (Restaurant res) =>
+            res.name.toLowerCase().contains(searchTerm.toLowerCase().trim())
         : null;
+    await Future.delayed(Duration(seconds: 2));
+
     return _paginatedRestaurants(page, pageSize, filter: filter);
   }
 

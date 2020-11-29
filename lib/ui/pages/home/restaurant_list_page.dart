@@ -6,10 +6,16 @@ import 'package:food_ordering_app/states_management/restaurant/restaurant_cubit.
 import 'package:food_ordering_app/states_management/restaurant/restaurant_state.dart';
 import 'package:food_ordering_app/ui/widgets/custom_text_field.dart';
 import 'package:food_ordering_app/ui/widgets/restaurant_list_item.dart';
+import 'package:food_ordering_app/utils/utils.dart';
 import 'package:restaurant/restaurant.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import 'home_page_adapter.dart';
+
 class RestaurantListPage extends StatefulWidget {
+  final IHomePageAdapter adapter;
+
+  RestaurantListPage(this.adapter);
   @override
   _RestaurantListPageState createState() => _RestaurantListPageState();
 }
@@ -66,47 +72,51 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
         ],
       ),
       extendBodyBehindAppBar: true,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Align(
-            child: _header(),
-            alignment: Alignment.topCenter,
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: FractionallySizedBox(
-              heightFactor: 0.75,
-              child: CubitConsumer<RestaurantCubit, RestaurantState>(
-                  builder: (_, state) {
-                if (state is PageLoaded) {
-                  currentState = state;
-                  restaurants.addAll(state.restaurants);
-                  _updateHeader();
-                }
-
-                if (currentState == null)
-                  return Center(child: CircularProgressIndicator());
-
-                return _buildListOfRestaurants();
-              }, listener: (context, state) {
-                if (state is ErrorState) {
-                  Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        state.message,
-                        style: Theme.of(context)
-                            .textTheme
-                            .caption
-                            .copyWith(color: Colors.white, fontSize: 16.0),
-                      ),
-                    ),
-                  );
-                }
-              }),
+      resizeToAvoidBottomPadding: false,
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Align(
+              child: _header(),
+              alignment: Alignment.topCenter,
             ),
-          )
-        ],
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: FractionallySizedBox(
+                heightFactor: 0.75,
+                child: CubitConsumer<RestaurantCubit, RestaurantState>(
+                    builder: (_, state) {
+                  if (state is PageLoaded) {
+                    currentState = state;
+                    restaurants.addAll(state.restaurants);
+                    _updateHeader();
+                  }
+
+                  if (currentState == null)
+                    return Center(child: CircularProgressIndicator());
+
+                  return _buildListOfRestaurants();
+                }, listener: (context, state) {
+                  if (state is ErrorState) {
+                    Scaffold.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          state.message,
+                          style: Theme.of(context)
+                              .textTheme
+                              .caption
+                              .copyWith(color: Colors.white, fontSize: 16.0),
+                        ),
+                      ),
+                    );
+                  }
+                }),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -124,12 +134,16 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
                 padding: const EdgeInsets.only(
                     left: 20.0, right: 20.0, bottom: 70.0),
                 child: CustomTextField(
-                  hint: 'find restaurants',
-                  fontSize: 14.0,
-                  height: 48.0,
-                  fontWeight: FontWeight.normal,
-                  onChanged: (val) {},
-                ),
+                    hint: 'find restaurants',
+                    fontSize: 14.0,
+                    height: 48.0,
+                    fontWeight: FontWeight.normal,
+                    onChanged: (val) {},
+                    inputAction: TextInputAction.search,
+                    onSubmitted: (query) {
+                      if (query.isEmpty) return;
+                      widget.adapter.onSearchQuery(context, query);
+                    }),
               ),
             )
           ],
@@ -180,7 +194,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
           padding: const EdgeInsets.only(top: 40.0),
           itemBuilder: (context, index) {
             return index >= restaurants.length
-                ? _bottomLoader()
+                ? bottomLoader()
                 : RestaurantListItem(restaurants[index]);
           },
           physics: BouncingScrollPhysics(),
@@ -200,16 +214,4 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
       restaurant.displayImgUrl,
     );
   }
-
-  _bottomLoader() => Container(
-      alignment: Alignment.center,
-      child: Center(
-        child: SizedBox(
-          width: 33.0,
-          height: 33.0,
-          child: CircularProgressIndicator(
-            strokeWidth: 1.5,
-          ),
-        ),
-      ));
 }

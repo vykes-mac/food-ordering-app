@@ -7,11 +7,12 @@ import 'package:food_ordering_app/states_management/auth/auth_cubit.dart';
 import 'package:food_ordering_app/states_management/helpers/header_cubit.dart';
 import 'package:food_ordering_app/states_management/restaurant/restaurant_cubit.dart';
 import 'package:food_ordering_app/ui/pages/auth/auth_page.dart';
+import 'package:food_ordering_app/ui/pages/home/home_page_adapter.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'cache/local_store_contract.dart';
-import 'ui/pages/restaurant/restaurant_list_page.dart';
+import 'ui/pages/home/restaurant_list_page.dart';
 
 class CompositionRoot {
   static SharedPreferences _sharedPreferences;
@@ -38,9 +39,10 @@ class CompositionRoot {
   }
 
   static Widget composeHomeUi() {
-    FakeRestaurantApi _api = FakeRestaurantApi(20);
+    FakeRestaurantApi _api = FakeRestaurantApi(50);
     RestaurantCubit _restaurantCubit =
-        RestaurantCubit(_api, defaultPageSize: 5);
+        RestaurantCubit(_api, defaultPageSize: 20);
+    IHomePageAdapter adapter = HomePageAdapter(_restaurantCubit);
 
     return MultiCubitProvider(providers: [
       CubitProvider<RestaurantCubit>(
@@ -49,6 +51,6 @@ class CompositionRoot {
       CubitProvider<HeaderCubit>(
         create: (BuildContext context) => HeaderCubit(),
       )
-    ], child: RestaurantListPage());
+    ], child: RestaurantListPage(adapter));
   }
 }
