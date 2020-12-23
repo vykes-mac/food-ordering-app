@@ -58,7 +58,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
   getRestaurantMenu(String restauranId) async {
     _startLoading();
     final menu = await _api.getRestaurantMenu(restaurantId: restauranId);
-    menu != null
+    menu.isNotEmpty
         ? emit(MenuLoaded(menu))
         : emit(ErrorState('no menu found for this restaurant'));
   }

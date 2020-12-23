@@ -3,6 +3,7 @@ import 'package:restaurant/restaurant.dart';
 
 class FakeRestaurantApi implements IRestaurantApi {
   List<Restaurant> _restaurants;
+  List<Menu> _restaurantMenus = [];
 
   FakeRestaurantApi(int numberOfRestaurants) {
     final faker = ff.Faker();
@@ -24,6 +25,27 @@ class FakeRestaurantApi implements IRestaurantApi {
         ),
       ),
     );
+
+    _restaurants.forEach((restaurant) {
+      var menus = List.generate(
+        faker.randomGenerator.integer(5),
+        (index) => Menu(
+          id: restaurant.id,
+          name: faker.food.dish(),
+          description: faker.lorem.sentences(2).join(),
+          items: List.generate(
+            faker.randomGenerator.integer(15),
+            (_) => MenuItem(
+              name: faker.food.dish(),
+              description: faker.lorem.sentence(),
+              unitPrice:
+                  faker.randomGenerator.integer(5000, min: 500).toDouble(),
+            ),
+          ),
+        ),
+      );
+      _restaurantMenus.addAll(menus);
+    });
   }
 
   @override
@@ -52,8 +74,9 @@ class FakeRestaurantApi implements IRestaurantApi {
   }
 
   @override
-  Future<List<Menu>> getRestaurantMenu({String restaurantId}) {
-    throw UnimplementedError();
+  Future<List<Menu>> getRestaurantMenu({String restaurantId}) async {
+    await Future.delayed(Duration(seconds: 2));
+    return _restaurantMenus.where((menu) => menu.id == restaurantId).toList();
   }
 
   @override

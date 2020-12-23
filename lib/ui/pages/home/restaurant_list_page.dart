@@ -141,7 +141,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
                     onChanged: (val) {},
                     inputAction: TextInputAction.search,
                     onSubmitted: (query) {
-                      if (query.isEmpty) return;
+                      //if (query.isEmpty) return;
                       widget.adapter.onSearchQuery(context, query);
                     }),
               ),
@@ -195,7 +195,11 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
           itemBuilder: (context, index) {
             return index >= restaurants.length
                 ? bottomLoader()
-                : RestaurantListItem(restaurants[index]);
+                : GestureDetector(
+                    onTap: () => widget.adapter
+                        .onRestaurantSelected(context, restaurants[index]),
+                    child: RestaurantListItem(restaurants[index]),
+                  );
           },
           physics: BouncingScrollPhysics(),
           itemCount: currentState.nextPage == null

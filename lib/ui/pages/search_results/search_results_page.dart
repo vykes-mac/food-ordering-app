@@ -3,6 +3,7 @@ import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:food_ordering_app/states_management/restaurant/restaurant_cubit.dart';
 import 'package:food_ordering_app/states_management/restaurant/restaurant_state.dart';
+import 'package:food_ordering_app/ui/pages/search_results/search_results_page_adapter.dart';
 import 'package:food_ordering_app/utils/utils.dart';
 import 'package:restaurant/restaurant.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -10,8 +11,9 @@ import 'package:transparent_image/transparent_image.dart';
 class SearchResultsPage extends StatefulWidget {
   final RestaurantCubit restaurantCubit;
   final String query;
+  final ISearchResultsPageAdapter adapter;
 
-  SearchResultsPage(this.restaurantCubit, this.query);
+  SearchResultsPage(this.restaurantCubit, this.query, this.adapter);
 
   @override
   _SearchResultsPageState createState() => _SearchResultsPageState();
@@ -113,38 +115,46 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
       itemBuilder: (context, index) {
         return index >= restaurants.length
             ? bottomLoader()
-            : ListTile(
-                leading: FadeInImage.memoryNetwork(
-                  placeholder: kTransparentImage,
-                  image: 'https://picsum.photos/id/292/300',
-                  height: 50,
-                  width: 50,
-                  fit: BoxFit.cover,
-                ),
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      restaurants[index].name,
-                      overflow: TextOverflow.ellipsis,
+            : Material(
+                child: InkWell(
+                  onTap: () => widget.adapter.onRestaurantSelected(
+                    context,
+                    restaurants[index],
+                  ),
+                  child: ListTile(
+                    leading: FadeInImage.memoryNetwork(
+                      placeholder: kTransparentImage,
+                      image: 'https://picsum.photos/id/292/300',
+                      height: 50,
+                      width: 50,
+                      fit: BoxFit.cover,
+                    ),
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          restaurants[index].name,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                        RatingBarIndicator(
+                          rating: 4.5,
+                          itemBuilder: (context, index) => Icon(
+                            Icons.star_rounded,
+                            color: Colors.amber,
+                          ),
+                          itemSize: 25.0,
+                        ),
+                      ],
+                    ),
+                    subtitle: Text(
+                      "${restaurants[index].address.street}, ${restaurants[index].address.city}, ${restaurants[index].address.parish}",
                       softWrap: true,
-                      style: Theme.of(context).textTheme.subtitle1,
+                      maxLines: 2,
+                      overflow: TextOverflow.clip,
                     ),
-                    RatingBarIndicator(
-                      rating: 4.5,
-                      itemBuilder: (context, index) => Icon(
-                        Icons.star_rounded,
-                        color: Colors.amber,
-                      ),
-                      itemSize: 25.0,
-                    ),
-                  ],
-                ),
-                subtitle: Text(
-                  "${restaurants[index].address.street}, ${restaurants[index].address.city}, ${restaurants[index].address.parish}",
-                  softWrap: true,
-                  maxLines: 2,
-                  overflow: TextOverflow.clip,
+                  ),
                 ),
               );
       },

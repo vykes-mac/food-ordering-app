@@ -1,23 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:food_ordering_app/states_management/restaurant/restaurant_cubit.dart';
-
-import 'search_results_page.dart';
+import 'package:restaurant/restaurant.dart';
 
 abstract class IHomePageAdapter {
   void onSearchQuery(BuildContext context, String query);
+  void onRestaurantSelected(BuildContext context, Restaurant restaurant);
 }
 
 class HomePageAdapter implements IHomePageAdapter {
-  final RestaurantCubit _restaurantCubit;
+  final Widget Function(Restaurant restaurant) onSelection;
+  final Widget Function(String query) onSearch;
 
-  HomePageAdapter(this._restaurantCubit);
+  HomePageAdapter({
+    @required this.onSelection,
+    @required this.onSearch,
+  });
 
   @override
   void onSearchQuery(BuildContext context, String query) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => SearchResultsPage(_restaurantCubit, query),
+        builder: (_) => onSearch(query),
+      ),
+    );
+  }
+
+  @override
+  void onRestaurantSelected(BuildContext context, Restaurant restaurant) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => onSelection(restaurant),
       ),
     );
   }
