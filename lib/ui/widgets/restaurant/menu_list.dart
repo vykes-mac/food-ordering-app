@@ -16,14 +16,23 @@ class MenuList extends StatefulWidget {
 class _MenuListState extends State<MenuList>
     with AutomaticKeepAliveClientMixin {
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ListView.separated(
       padding: EdgeInsets.zero,
+      primary: false,
+      shrinkWrap: true,
       itemBuilder: (context, index) {
         return Material(
           child: InkWell(
-            onTap: () =>
-                showAddToBasketOption(context, widget.menuItems[index]),
+            onTap: () {
+              showAddToBasketOption(context, widget.menuItems[index]);
+            },
             child: ListTile(
               isThreeLine: false,
               leading: FadeInImage.memoryNetwork(
