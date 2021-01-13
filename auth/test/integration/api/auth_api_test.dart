@@ -15,7 +15,7 @@ void main() {
 
   var credential = Credential(
     type: AuthType.email,
-    email: 'newuser@email.com',
+    email: 'johnsm@email.com',
     password: 'pass123',
   );
   group('signin', () {

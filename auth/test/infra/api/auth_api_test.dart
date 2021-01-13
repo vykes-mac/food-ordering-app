@@ -23,8 +23,10 @@ void main() {
         type: AuthType.email, email: 'email@email', password: 'pass');
     test('should return error when status code is not 200', () async {
       //arrange
-      when(client.post(any, body: anyNamed('body')))
-          .thenAnswer((_) async => http.Response('{}', 404));
+      when(client.post(any,
+              body: anyNamed('body'), headers: anyNamed('headers')))
+          .thenAnswer((_) async =>
+              http.Response(jsonEncode({'error': 'not found'}), 404));
       //act
       var result = await sut.signIn(credential);
       //assert
@@ -34,7 +36,8 @@ void main() {
     test('should return error when status code is 200 but malformed json',
         () async {
       //arrange
-      when(client.post(any, body: anyNamed('body')))
+      when(client.post(any,
+              body: anyNamed('body'), headers: anyNamed('headers')))
           .thenAnswer((_) async => http.Response('{}', 200));
       //act
       var result = await sut.signIn(credential);
@@ -45,8 +48,10 @@ void main() {
     test('should return token string when successful', () async {
       //arrange
       var tokenStr = 'Abbggs..';
-      when(client.post(any, body: anyNamed('body'))).thenAnswer((_) async =>
-          http.Response(jsonEncode({'auth_token': tokenStr}), 200));
+      when(client.post(any,
+              body: anyNamed('body'), headers: anyNamed('headers')))
+          .thenAnswer((_) async =>
+              http.Response(jsonEncode({'auth_token': tokenStr}), 200));
       //act
       var result = await sut.signIn(credential);
       //assert
