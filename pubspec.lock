@@ -51,7 +51,7 @@ packages:
     source: hosted
     version: "1.15.0-nullsafety.3"
   common:
-    dependency: transitive
+    dependency: "direct main"
     description:
       path: common
       relative: true

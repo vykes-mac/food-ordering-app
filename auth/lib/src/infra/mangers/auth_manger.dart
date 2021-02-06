@@ -1,8 +1,8 @@
 import 'package:auth/auth.dart';
+import 'package:auth/src/domain/credential.dart';
 import 'package:auth/src/infra/adapters/email_auth.dart';
 import 'package:auth/src/infra/adapters/google_auth.dart';
 import 'package:auth/src/infra/api/auth_api_contract.dart';
-import 'package:flutter/foundation.dart';
 
 class AuthManager {
   IAuthApi _api;
@@ -10,14 +10,16 @@ class AuthManager {
     this._api = api;
   }
 
-  IAuthService get google => GoogleAuth(_api);
-
-  IAuthService email({
-    @required String email,
-    @required String password,
-  }) {
-    final emailAuth = EmailAuth(_api);
-    emailAuth.credential(email: email, password: password);
-    return emailAuth;
+  IAuthService service(AuthType type) {
+    var service;
+    switch (type) {
+      case AuthType.google:
+        service = GoogleAuth(_api);
+        break;
+      case AuthType.email:
+        service = EmailAuth(_api);
+        break;
+    }
+    return service;
   }
 }

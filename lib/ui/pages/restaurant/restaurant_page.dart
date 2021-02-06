@@ -71,7 +71,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
           children: [
             FadeInImage.memoryNetwork(
               placeholder: kTransparentImage,
-              image: 'https://picsum.photos/id/292/300',
+              image: widget.restaurant.displayImgUrl,
               height: 350,
               width: double.infinity,
               fit: BoxFit.cover,

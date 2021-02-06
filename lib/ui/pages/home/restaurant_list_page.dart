@@ -1,6 +1,10 @@
+import 'package:auth/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:food_ordering_app/models/header.dart';
+import 'package:food_ordering_app/states_management/auth/auth_cubit.dart';
+import 'package:food_ordering_app/states_management/auth/auth_state.dart'
+    as authState;
 import 'package:food_ordering_app/states_management/helpers/header_cubit.dart';
 import 'package:food_ordering_app/states_management/restaurant/restaurant_cubit.dart';
 import 'package:food_ordering_app/states_management/restaurant/restaurant_state.dart';
@@ -14,8 +18,12 @@ import 'home_page_adapter.dart';
 
 class RestaurantListPage extends StatefulWidget {
   final IHomePageAdapter adapter;
+  final IAuthService service;
 
-  RestaurantListPage(this.adapter);
+  RestaurantListPage(
+    this.adapter,
+    this.service,
+  );
   @override
   _RestaurantListPageState createState() => _RestaurantListPageState();
 }
@@ -58,6 +66,15 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.power_settings_new_rounded,
+            size: 36.0,
+          ),
+          onPressed: () {
+            _logout();
+          },
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),
@@ -114,7 +131,34 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
                   }
                 }),
               ),
-            )
+            ),
+            Align(
+              child: CubitListener<AuthCubit, authState.AuthState>(
+                  child: Container(),
+                  listener: (context, state) {
+                    if (state is authState.LoadingState) {
+                      _showLoader();
+                    }
+                    if (state is authState.SignOutSuccessState) {
+                      widget.adapter.onUserLogout(context);
+                    }
+                    if (state is authState.ErrorState) {
+                      Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            state.message,
+                            style: Theme.of(context).textTheme.caption.copyWith(
+                                  color: Colors.white,
+                                  fontSize: 16.0,
+                                ),
+                          ),
+                        ),
+                      );
+                      _hideLoader();
+                    }
+                  }),
+              alignment: Alignment.center,
+            ),
           ],
         ),
       ),
@@ -154,7 +198,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
         children: [
           FadeInImage.memoryNetwork(
             placeholder: kTransparentImage,
-            image: 'https://picsum.photos/id/292/300',
+            image: header.imageUrl,
             height: 350,
             width: double.infinity,
             fit: BoxFit.cover,
@@ -217,5 +261,28 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
       restaurant.type,
       restaurant.displayImgUrl,
     );
+  }
+
+  _logout() {
+    CubitProvider.of<AuthCubit>(context).signout(widget.service);
+  }
+
+  _showLoader() {
+    var alert = AlertDialog(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      content: Center(
+        child: CircularProgressIndicator(
+          backgroundColor: Colors.white70,
+        ),
+      ),
+    );
+
+    showDialog(
+        context: context, barrierDismissible: true, builder: (_) => alert);
+  }
+
+  _hideLoader() {
+    Navigator.of(context, rootNavigator: true).pop();
   }
 }

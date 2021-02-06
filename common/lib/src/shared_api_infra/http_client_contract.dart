@@ -1,6 +1,7 @@
 abstract class IHttpClient {
-  Future<HttpResult> get(url, {Map<String, String> headers});
-  Future<HttpResult> post(url, String body, {Map<String, String> headers});
+  Future<HttpResult> get(String url, {Map<String, String> headers});
+  Future<HttpResult> post(String url, String body,
+      {Map<String, String> headers});
 }
 
 class HttpResult {

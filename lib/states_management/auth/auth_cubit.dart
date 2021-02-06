@@ -10,9 +10,10 @@ class AuthCubit extends Cubit<AuthState> {
   final ILocalStore localStore;
   AuthCubit(this.localStore) : super(InitialState());
 
-  signin(IAuthService authService) async {
+  signin(IAuthService authService, AuthType type) async {
     _startLoading();
     final result = await authService.signIn();
+    localStore.saveAuthType(type);
     _setResultOfAuthState(result);
   }
 
@@ -41,9 +42,10 @@ class AuthCubit extends Cubit<AuthState> {
   void _setResultOfAuthState(Result<Token> result) {
     if (result.asError != null) {
       emit(ErrorState(result.asError.error));
-      return;
+    } else {
+      localStore.save(result.asValue.value);
+      emit(AuthSuccessState(result.asValue.value));
     }
-    emit(AuthSuccessState(result.asValue.value));
   }
 
   void _startLoading() {

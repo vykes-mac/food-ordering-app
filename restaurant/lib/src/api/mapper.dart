@@ -7,7 +7,7 @@ class Mapper {
       id: json['id'],
       name: json['name'],
       type: json['type'],
-      displayImgUrl: json['image_url'] ?? '',
+      displayImgUrl: json['displayImageUrl'] ?? '',
       location: Location(
         latitude: json['location']['latitude'],
         longitude: json['location']['longitude'],
@@ -32,9 +32,9 @@ class Mapper {
               .map<MenuItem>(
                 (item) => MenuItem(
                     name: item['name'],
-                    imageUrls: item['image_urls'].cast<String>(),
+                    imageUrls: item['imageUrls'].cast<String>(),
                     description: item['description'],
-                    unitPrice: item['unit_price']),
+                    unitPrice: item['unitPrice'].toDouble()),
               )
               .toList()
           : [],
