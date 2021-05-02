@@ -89,7 +89,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
         ],
       ),
       extendBodyBehindAppBar: true,
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
         child: Stack(

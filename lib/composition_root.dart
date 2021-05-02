@@ -5,10 +5,12 @@ import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:food_ordering_app/cache/local_store.dart';
 import 'package:food_ordering_app/states_management/auth/auth_cubit.dart';
 import 'package:food_ordering_app/states_management/helpers/header_cubit.dart';
+import 'package:food_ordering_app/states_management/helpers/main_page_cubit.dart';
 import 'package:food_ordering_app/states_management/restaurant/restaurant_cubit.dart';
 import 'package:food_ordering_app/ui/pages/auth/auth_page.dart';
 import 'package:food_ordering_app/ui/pages/auth/auth_page_adapter.dart';
 import 'package:food_ordering_app/ui/pages/home/home_page_adapter.dart';
+import 'package:food_ordering_app/ui/pages/main/main_page.dart';
 import 'package:food_ordering_app/ui/pages/search_results/search_results_page.dart';
 import 'package:http/http.dart';
 import 'package:restaurant/restaurant.dart';
@@ -57,7 +59,7 @@ class CompositionRoot {
     final token = await _localStore.fetch();
     final authType = await _localStore.fetchAuthType();
     final service = _manager.service(authType);
-    return token == null ? composeAuthUi() : composeHomeUi(service);
+    return token == null ? composeAuthUi() : _composeMainPage(service);
   }
 
   static Widget composeHomeUi(IAuthService service) {
@@ -81,6 +83,25 @@ class CompositionRoot {
       )
     ], child: RestaurantListPage(adapter, service));
   }
+
+//experimental features for using a bottom navigation bar to show different pages
+  static Widget _composeMainPage(IAuthService service) {
+    final pagesToCompose = [
+      () => composeHomeUi(service),
+      () => _composeQR(),
+      () => _composeSettings()
+    ];
+    MainPageCubit _mainPageCubit =
+        MainPageCubit(pagesToCompose: pagesToCompose);
+    return CubitProvider<MainPageCubit>(
+      create: (BuildContext context) => _mainPageCubit,
+      child: MainPage(),
+    );
+  }
+
+  //experimental features for using a bottom navigation bar to show different pages
+  static Widget _composeQR() => Center(child: Text('QR Page'));
+  static Widget _composeSettings() => Center(child: Text('Settings Page'));
 
   static Widget _composeSearchResultsPageWith(String query) {
     RestaurantCubit restaurantCubit =
